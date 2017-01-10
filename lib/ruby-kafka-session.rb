@@ -49,7 +49,7 @@ module Kafka
 
     def self.destructor
       proc {
-        puts 'closing Kafka::MockSession';
+        puts 'closing Kafka::Session';
         # get pids for zookeeper and kafka.
         # WARNING: will accidentally get any process that match and are
         # not related to this program
@@ -65,7 +65,7 @@ module Kafka
 end
 
 =begin
-puts 'starting Kafka::MockSession'
+puts 'starting Kafka::Session'
 Kafka::Session.new('~/Downloads/kafka_2.11-0.9.0.1', 9092)
 # let it start everything and then destruct
 sleep 20
