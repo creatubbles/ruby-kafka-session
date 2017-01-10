@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    ruby-kafka-session (0.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ruby-kafka-session!
+
+BUNDLED WITH
+   1.13.6
