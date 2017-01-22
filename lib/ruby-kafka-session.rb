@@ -12,19 +12,13 @@ module Kafka
 
       kafka_file_path_exists = system("[ -d #{kafka_file_path} ]")
       if kafka_file_path_exists
-        @zookeeper_pid = fork do
-          print "start zookeeper"
-          system("#{kafka_file_path}/bin/zookeeper-server-start.sh #{kafka_file_path}/config/zookeeper.properties")
-        end
-
-        @kafka_pid = fork do
-          # zookeeper needs to be running before starting kafka.
-          # It takes a few seconds.
-          sleep 30
-          print "start kafka"
-          system("#{kafka_file_path}/bin/kafka-server-start.sh #{kafka_file_path}/config/server.properties")
-        end
-
+        puts 'spawning zookeeper'
+        @zookeeper_pid = spawn "#{kafka_file_path}/bin/zookeeper-server-start.sh -daemon #{kafka_file_path}/config/zookeeper.properties"
+        sleep 10
+        puts 'spawning kafka'
+        @kafka_pid     = spawn "#{kafka_file_path}/bin/kafka-server-start.sh -daemon #{kafka_file_path}/config/server.properties"
+        sleep 4
+        puts 'kafka is ready'
         @kafka_file_path = kafka_file_path
       else
         raise ArgumentError, "The kafka_file_path does not exist", kafka_file_path
@@ -67,13 +61,10 @@ end
 =begin
 puts 'starting Kafka::Session'
 Kafka::Session.new('~/Downloads/kafka_2.11-0.9.0.1', 9092)
-# let it start everything and then destruct
-sleep 20
 
 Run the following command in the shell after the class has been destroyed if
 you want to make sure that it properly closed the processes.
 ps -ef | grep 'zookeeper\|kafka'
-
 
 # if you want to run manually do this
 bin/zookeeper-server-start.sh config/zookeeper.properties
